@@ -7,7 +7,7 @@ const blogSchema = new mongoose.Schema({
         required: true
     },
     body: {
-        type: ObjectId,
+        type: String,
         required: true
     },
     authorId: {
@@ -24,14 +24,23 @@ const blogSchema = new mongoose.Schema({
     isDeleted: {
         type: Boolean,
         default: false,
-        deletedAt: { timestamps: true }
+        timestamps: true 
 
     },
+    deletedAt : {
+        type : Date
+    },
+
     isPublished: {
         type: Boolean,
         default: false,
-        publishedAt: { timestamps: true }
+    
+    },
+    publishedAt: {
+        type : Date,
+        default : Date.now
     }
+    
 
 }, { timestamps: true });
 
