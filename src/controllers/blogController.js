@@ -1,10 +1,10 @@
 const authorModel = require("../models/authorModel")
 const bookModel= require("../models/blogModel")
 
-const createBook= async function (req, res) {
+const createBlog= async function (req, res) {
     let book = req.body
     let bookCreated = await bookModel.create(book)
-    res.send({data: bookCreated})
+    res.status(201).send({data: blogCreated})
 }
 
 const getBooksData= async function (req, res) {
