@@ -12,10 +12,8 @@ router.post("/createAuthor", authorController.createAuthor  )
 
 // router.get("/getAuthorsData", authorController.getAuthorsData)
 
-router.post("/createBlog", blogController.createBlog  )
-
-// router.get("/getBooksData", blogController.getBooksData)
-
-// router.get("/getBooksWithAuthorDetails", blogController.getBooksWithAuthorDetails)
+router.get("/createBlog", blogController.createBlog  )
+router.put("/updateBlog/:", blogController.createBlog  )
+router.delete("/createBlog", blogController.createBlog  )
 
 module.exports = router;
