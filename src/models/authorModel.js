@@ -21,7 +21,7 @@ const authorSchema = new mongoose.Schema({
         validate: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
     },
     password: {
-        type: ObjectId,
+        type: String,
         required: true
     },
 
