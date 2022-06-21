@@ -1,10 +1,31 @@
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId
+const authorSchema = new mongoose.Schema({
+    
+    Fname: {
+        type: String,
+        required: true
+    },
+    Lname: {
+        type: String,
+        required: true
+    },
+    title: {
+        type: String,
+        enum: ['Mr', 'Mrs', 'Miss']
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        validate: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+    },
+    password: {
+        type: ObjectId,
+        required: true
+    },
 
-const authorSchema = new mongoose.Schema( {
-    author_id: String,
-    author_name: String,
-    age:Number,
-    address:String
+    address: String
 
 }, { timestamps: true });
 
