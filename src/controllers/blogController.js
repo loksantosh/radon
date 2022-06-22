@@ -8,7 +8,7 @@ const createBlog = async (req, res) => {
         let blogCreated = await blogModel.create(blog)
         res.status(201).send({ data: blogCreated })
     } catch (error) {
-        res.status(400).send({ msg: error.message })
+        res.status(500).send({ msg:error.message })
     }
 }
 
@@ -19,6 +19,7 @@ const getBlogsData = async (req, res) => {
         let categorySelected = req.query.category
         let blogsData = []
         let blogs = await blogModel.find({ authorId: input })
+        if(!blogs) return res.status(404).send({msg: "no blog found"})
         blogs.filter(n => {
             n.category = categorySelected
             if (n.isDeleted == false && n.isPublished == true)
@@ -28,7 +29,7 @@ const getBlogsData = async (req, res) => {
 
     }
     catch (error) {
-        res.status(404).send({ msg: "Data not fond" })
+        res.status(500).send({ msg:error.message })
     }
 }
 
@@ -39,11 +40,12 @@ const updateBlog = async (req, res) => {
         let tags = req.body.tags
         let date = Date.now()
         let blogs = await blogModel.findOneAndUpdate({ _id: req.params.blogId },
-            { $set: { title: title, body: body, tags: tags, isPublished: true, publishedAt: date } }, { new: true, upsert: true })
-        res.status(200).send({ msg: blogs })
+            { $set: { title: title, body: body, tags: tags, isPublished: true, publishedAt: date } }, { new: true })
+            if(!blogs) return res.status(404).send({msg: "no blog found"})
+            res.status(200).send({ msg: blogs })
     }
-    catch (error) {
-        res.status(404).send({ msg: "Data not fond" })
+   catch (error) {
+        res.status(500).send({ msg:error.message })
     }
 }
 
@@ -52,30 +54,32 @@ const deleteBlog = async (req, res) => {
         let inputId = req.params.blogId
         let date = Date.now()
         let data = await blogModel.findOneAndUpdate({ _id: inputId },
-            { $set: { isDeleted: true, deletedAt: date } }, { new: true, upsert: true })
+            { $set: { isDeleted: true, deletedAt: date } }, { new: true })
+            if(!data) return res.status(404).send({msg: "no data found"})
         res.status(200).send({ status: true, msg: data })
     }
     catch (error) {
-        res.status(404).send({ msg: "Data not fond" })
+        res.status(500).send({ msg:error.message })
     }
 }
 
 
 const deleteBlogQuery = async (req, res) => {
     try {
-        let inputId = req.query.blog
+        let authorId = req.query.authorId
         let category = req.query.category
         let tags = req.query.tags
         let subCategory = req.query.subCategory
         let isPublished = req.query.boolean
 
         let date = Date.now()
-        let data = await blogModel.updateMany({ authorId: inputId, category: category, tags: tags, subcategory: subCategory, isPublished: isPublished },
-            { $set: { isDeleted: true, deletedAt: date } }, { new: true, upsert: true })
+        let data = await blogModel.updateMany({ category: category, authorId: authorId, tags: tags, subcategory: subCategory, isPublished: isPublished },
+            { $set: { isDeleted: true, deletedAt: date } }, { new: true })
+            if(!blogs) return res.status(404).send({msg: "no data found"})
         res.status(200).send({ status: true, msg: data })
     }
     catch (error) {
-        res.status(404).send({ msg: "Data not fond" })
+        res.status(500).send({ msg:error.message })
     }
 }
 
