@@ -14,11 +14,14 @@ const createBlog = async (req, res) => {
 
 const getBlogsData = async (req, res) => {
     try {
+
         let input = req.query.givenId
+        let categorySelected = req.query.category
         let blogsData = []
         let blogs = await blogModel.find({ authorId: input })
         blogs.filter(n => {
-            if (n.isDeleted == false)
+            n.category = categorySelected
+            if (n.isDeleted == false && n.isPublished == true)
                 blogsData.push(n)
         })
         return res.status(200).send({ data: blogsData })
@@ -31,12 +34,12 @@ const getBlogsData = async (req, res) => {
 
 const updateBlog = async (req, res) => {
     try {
-       let title = req.body.title
+        let title = req.body.title
         let body = req.body.body
         let tags = req.body.tags
         let date = Date.now()
         let blogs = await blogModel.findOneAndUpdate({ _id: req.params.blogId },
-            { $set: { title: title, body: body, tags: tags, isPublished: true, publishedAt: date } }, { new: true })
+            { $set: { title: title, body: body, tags: tags, isPublished: true, publishedAt: date } }, { new: true, upsert: true })
         res.status(200).send({ msg: blogs })
     }
     catch (error) {
@@ -57,14 +60,17 @@ const deleteBlog = async (req, res) => {
     }
 }
 
-// const deleteBlogQuery = async(req, res) =>{
 
-// }
 const deleteBlogQuery = async (req, res) => {
     try {
         let inputId = req.query.blog
+        let category = req.query.category
+        let tags = req.query.tags
+        let subCategory = req.query.subCategory
+        let isPublished = req.query.boolean
+
         let date = Date.now()
-        let data = await blogModel.updateMany({ authorId: inputId },
+        let data = await blogModel.updateMany({ authorId: inputId, category: category, tags: tags, subcategory: subCategory, isPublished: isPublished },
             { $set: { isDeleted: true, deletedAt: date } }, { new: true, upsert: true })
         res.status(200).send({ status: true, msg: data })
     }
