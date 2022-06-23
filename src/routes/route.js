@@ -1,19 +1,31 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require("jsonwebtoken")
 
-const authorController= require("../controllers/authorController")
+
+const authorController = require("../controllers/authorController")
 const blogController = require("../controllers/blogController")
+const mController = require("../middleware/middleware")
 
-router.get("/test-me", function (req, res) {
-    res.send("My first ever api!")
-})
 
-router.post("/createAuthor", authorController.createAuthor  )
 
-// router.get("/getAuthorsData", authorController.getAuthorsData)
 
-router.post("/createBlog", blogController.createBlog  )
-router.put("/updateBlog/:", blogController.createBlog  )
-router.delete("/createBlog", blogController.createBlog  )
+router.post("/createAuthor", authorController.createAuthor)
+
+router.post("/createBlog", blogController.createBlog)
+
+router.get("/getBlogsData",mController.authenticate, blogController.getBlogsData)
+
+router.put("/updateBlog/:blogId", mController.authorize, blogController.updateBlog)
+
+router.delete("/deleteBlog/:blogId", mController.authorize, blogController.deleteBlog)
+
+router.delete("/deleteBlogQuery", mController.authorize, blogController.deleteBlogQuery)
+
+router.post("/loginAuthor", authorController.loginAuthor)
+
 
 module.exports = router;
+
+
+
