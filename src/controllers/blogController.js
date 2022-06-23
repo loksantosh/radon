@@ -2,32 +2,36 @@ const authorModel = require("../models/authorModel")
 const blogModel = require("../models/blogModel")
 
 
+
 const createBlog = async (req, res) => {
     try {
         let Blog = req.body
-        if(!Blog.title) return res.status(400).send({msg: " title is required "})
-        if(!Blog.body) return res.status(400).send({msg: "body is required "})
-        if(!Blog.authorId) return res.status(400).send({msg: " authorId is required "})
-        if(!Blog.category) return res.status(400).send({msg: " category is requirBlog"})
+        if (!Blog.title) return res.status(400).send({ msg: " title is required " })
+        if (!Blog.body) return res.status(400).send({ msg: "body is required " })
+        if (!Blog.authorId) return res.status(400).send({ msg: " authorId is required " })
+        if (!Blog.category) return res.status(400).send({ msg: " category is require" })
         let blogCreated = await blogModel.create(Blog)
-        
+
         res.status(201).send({ data: blogCreated })
     } catch (error) {
         res.status(500).send({ msg: error.message })
     }
 }
 
+
+
 const getBlogsData = async (req, res) => {
     try {
 
         let input = req.query.authorId
+        let categorySelected = req.query.category
         if (input) {
-            let categorySelected = req.query.category
+
             let blogsData = []
-            let blogs = await blogModel.find({ authorId: input })
+            let blogs = await blogModel.find({ authorId: input, category: categorySelected })
             if (!blogs) return res.status(404).send({ msg: "no blog found" })
             blogs.filter(n => {
-                n.category = categorySelected
+
                 if (n.isDeleted == false && n.isPublished == true)
                     blogsData.push(n)
             })
@@ -57,9 +61,10 @@ const updateBlog = async (req, res) => {
         let blogs = await blogModel.findOneAndUpdate({ _id: req.params.blogId },
             { $set: { title: title, body: body, isPublished: true, publishedAt: date } }, { new: true })
 
-       if(tags || subCategory){ blogs.tags.push(tags)
-        blogs.subCategory.push(subCategory)
-    }
+        if (tags || subCategory) {
+            blogs.tags.push(tags)
+            blogs.subCategory.push(subCategory)
+        }
 
         if (!blogs) return res.status(404).send({ msg: "no blog found" })
         res.status(200).send({ msg: blogs })
