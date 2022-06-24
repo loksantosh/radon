@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require("jsonwebtoken")
+
 
 
 const authorController = require("../controllers/authorController")
@@ -23,6 +23,14 @@ router.delete("/deleteBlog/:blogId", mController.authorize, blogController.delet
 router.delete("/deleteBlogQuery", mController.authorize, blogController.deleteBlogQuery)
 
 router.post("/loginAuthor", authorController.loginAuthor)
+
+router.all("/**", function (req, res) {
+    res.status(404).send({
+        status: false,
+        msg: "The api you request is not available"
+    })
+})
+
 
 
 module.exports = router;

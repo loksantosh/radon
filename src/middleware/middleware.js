@@ -38,9 +38,7 @@ if (!decodedToken)
 
 
 
-let mid = async function(req, res, next){
 
-}
 
 
 

@@ -4,28 +4,34 @@ const authorSchema = new mongoose.Schema({
 
     Fname: {
         type: String,
-        required: true
+        required: true,
+        trim :true
     },
     Lname: {
         type: String,
-        required: true
+        required: true,
+        trim :true
     },
     title: {
         type: String,
-        enum: ['Mr', 'Mrs', 'Miss']
+        required:true,
+        enum: ['Mr', 'Mrs', 'Miss'],
+        trim :true
     },
     email: {
         type: String,
         required: true,
         unique: true,
-        validate: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+        validate: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+        trim:true
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        trim:true
     },
 
-    address: String
+   
 
 }, { timestamps: true });
 
