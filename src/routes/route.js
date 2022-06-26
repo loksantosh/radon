@@ -20,7 +20,7 @@ router.put("/updateBlog/:blogId", mController.authorize, blogController.updateBl
 
 router.delete("/deleteBlog/:blogId", mController.authorize, blogController.deleteBlog)
 
-router.delete("/deleteBlogQuery", mController.authorize, blogController.deleteBlogQuery)
+router.delete("/deleteBlogQuery",mController.authenticate, blogController.deleteBlogQuery)
 
 router.post("/loginAuthor", authorController.loginAuthor)
 

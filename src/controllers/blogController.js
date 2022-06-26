@@ -84,13 +84,15 @@ const deleteBlog = async (req, res) => {
     try {
         let inputId = req.params.blogId
         let date = Date.now()
-        if (Object.keys(author).length == 0) {
-            return res.status(400).send({ status: false, msg: "Invalid request Please provide valid Author  details" });
-        }
-        
+
+        let alert = await blogModel.findOne({ _id: inputId , isDeleted: true })
+        if (alert) return res.status(409).send({ msg: "Blog already deleted" })
+
         let data = await blogModel.findOneAndUpdate({ _id: inputId },
             { $set: { isDeleted: true, deletedAt: date } }, { new: true })
+            
         if (!data) return res.status(404).send({ msg: "no data found" })
+       
         res.status(200).send({ status: true, msg: data })
     }
     catch (error) {
@@ -108,13 +110,10 @@ const deleteBlogQuery = async (req, res) => {
         let isPublished = req.query.boolean
         let date = Date.now()
 
-        if (Object.keys(author).length == 0) {
-            return res.status(400).send({ status: false, msg: "Invalid request Please provide valid Author  details" });
-        }
 
         let blogs = await blogModel.updateMany({ category: category, authorId: authorId, tags: tags, subcategory: subCategory, isPublished: isPublished },
             { $set: { isDeleted: true, deletedAt: date } }, { new: true })
-            
+
         if (!blogs) return res.status(404).send({ msg: "no data found" })
         res.status(200).send({ status: true, msg: blogs })
     }
