@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken")
 const passValidator = require('password-validator');
 const emailValidator = require('email-validator')
 
+
 const createAuthor = async function (req, res) {
     try {
         let author = req.body
@@ -54,6 +55,7 @@ const createAuthor = async function (req, res) {
 
 const loginAuthor = async function (req, res) {
     try {
+        let author = req.body
         let email = req.body.email
         let password = req.body.password
         if (Object.keys(author).length == 0) {
