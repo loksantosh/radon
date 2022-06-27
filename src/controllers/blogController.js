@@ -28,18 +28,18 @@ const getBlogsData = async (req, res) => {
 
         let input = req.query.authorId
         let isValid = mongoose.Types.ObjectId.isValid(input)
-        if(!isValid) return res.status(400).send({ msg: "enter valid objectID" })
+        if (!isValid) return res.status(400).send({ msg: "enter valid objectID" })
         let categorySelected = req.query.category
         if (input) {
 
-            let blogs = await blogModel.find({ authorId: input, category: categorySelected, isDeleted: false }).populate("authorId")
+            let blogs = await blogModel.find({ authorId: input, category: categorySelected, isDeleted: false }).populate("authorId") //ispublished =true not given because it not makes sense
 
             // if (!blogs) return res.status(404).send({ msg: "no blog found" })
 
             if (blogs.length == 0) {
                 return res.status(404).send({ msg: "Sorry , No data found" });
-            }
-            return res.status(200).send({ data: blogs })
+        }
+           else return res.status(200).send({ data: blogs })
         }
         else {
             let blogs = await blogModel.find({ isDeleted: false }).populate("authorId")
@@ -60,7 +60,7 @@ const updateBlog = async (req, res) => {
     try {
         let inputId = req.params.blogId
         let isValid = mongoose.Types.ObjectId.isValid(inputId)
-        if(!isValid) return res.status(400).send({ msg: "enter valid objectID" })
+        if (!isValid) return res.status(400).send({ msg: "enter valid objectID" })
 
         let author = req.body
         let title = req.body.title
@@ -95,7 +95,7 @@ const deleteBlog = async (req, res) => {
         let inputId = req.params.blogId
 
         let isValid = mongoose.Types.ObjectId.isValid(inputId)
-        if(!isValid) return res.status(400).send({ msg: "enter valid objectID" })
+        if (!isValid) return res.status(400).send({ msg: "enter valid objectID" })
         let date = Date.now()
 
         let alert = await blogModel.findOne({ _id: inputId, isDeleted: true })
@@ -119,14 +119,20 @@ const deleteBlogQuery = async (req, res) => {
         let authorId = req.query.authorId
 
         let isValid = mongoose.Types.ObjectId.isValid(authorId)
-        if(!isValid) return res.status(400).send({ msg: "enter valid objectID" })
-
+        if (!isValid) return res.status(400).send({ msg: "enter valid objectID" })
+        let input = req.query
         let category = req.query.category
         let tags = req.query.tags
         let subCategory = req.query.subCategory
         let isPublished = req.query.boolean
         let date = Date.now()
 
+        if (Object.keys(input).length == 0) {
+            return res.status(400).send({ status: false, msg: "Invalid request Please provide valid blog details in Query" });
+        }
+
+        let alert = await blogModel.find({  authorId: authorId, isDeleted: true })
+        if (alert) return res.status(409).send({ msg: "Sorry ,all blogs of the selected author were already deleted" })
 
         let blogs = await blogModel.updateMany({ category: category, authorId: authorId, tags: tags, subcategory: subCategory, isPublished: isPublished },
             { $set: { isDeleted: true, deletedAt: date } }, { new: true })
